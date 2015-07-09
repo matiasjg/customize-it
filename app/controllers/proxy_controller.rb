@@ -6,8 +6,8 @@ class ProxyController < ApplicationController
   layout 'embedded_app'
 
   def index
-    if params[:s]
-        @step = Step.where(shop_id: session[:shopify], id: params[:s]).first
+    if params[:step_url]
+        @step = Step.where(shop_id: session[:shopify], step_url: params[:step_url]).first
     else
         @step = Step.where(shop_id: session[:shopify]).order("id ASC").first
     end
@@ -19,6 +19,7 @@ class ProxyController < ApplicationController
     render :layout => false, :content_type => 'application/liquid'
   end
 
+  # preview image
   def show
     render :layout => false, :content_type => 'application/liquid'
   end

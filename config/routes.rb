@@ -4,7 +4,10 @@ Rails.application.routes.draw do
 
   resources :steps
 
-  resources :proxy
+  get 'proxy', to: 'proxy#index'
+  get 'proxy/show', to: 'proxy#show'
+
+  get 'proxy/:step_url/:handle/', to: 'proxy#index'
 
   controller :sessions do
     get 'login' => :new, :as => :login
