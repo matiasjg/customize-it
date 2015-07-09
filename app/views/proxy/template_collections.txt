@@ -1,0 +1,28 @@
+<ul>
+{% for collection in collections %}
+    <li class="col"> <a href="{{ collection.url }}">{{ collection.title }}</a></li>
+{% endfor %}
+</ul>
+
+
+
+<script>
+  var belt = '';
+
+  $(document).ready(function() {
+    $("li.col a").click(function(e) {
+        e.preventDefault();
+
+        str = $(this).attr('href');
+        arr = str.split('/');
+        colName = arr[arr.length-1];
+
+        loadCollection(colName);
+    });
+  });
+
+  function loadCollection(collectionName) {
+    location.href = "/apps/customize/list?c="+collectionName;
+  }
+
+</script>

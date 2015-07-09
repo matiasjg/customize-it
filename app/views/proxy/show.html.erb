@@ -1,0 +1,4 @@
+{% layout none %}
+{% assign preview = all_products.<%= params[:handle] %> %}
+
+<img src="{{ preview.images[0].src | product_img_url: 'medium' }}">
