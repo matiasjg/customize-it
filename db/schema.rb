@@ -14,20 +14,20 @@
 ActiveRecord::Schema.define(version: 20150707133511) do
 
   create_table "shops", force: :cascade do |t|
-    t.string   "shopify_domain", null: false
-    t.string   "shopify_token",  null: false
+    t.string   "shopify_domain", limit: 255, null: false
+    t.string   "shopify_token",  limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "shops", ["shopify_domain"], name: "index_shops_on_shopify_domain", unique: true
+  add_index "shops", ["shopify_domain"], name: "index_shops_on_shopify_domain", unique: true, using: :btree
 
   create_table "steps", force: :cascade do |t|
-    t.string   "name"
-    t.text     "html"
-    t.integer  "shop_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "name",       limit: 255
+    t.text     "html",       limit: 65535
+    t.integer  "shop_id",    limit: 4
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
 end
