@@ -17,12 +17,15 @@ class StepsController < ApplicationController
 
   # GET /steps/new
   def new
+    @collections = ShopifyAPI::CustomCollection.find(:all, :params => { :published_status => "any" })
+
     @step = Step.new
     @step.shop_id = session[:shopify]
   end
 
   # GET /steps/1/edit
   def edit
+    @collections = ShopifyAPI::CustomCollection.find(:all, :params => { :published_status => "any" })
   end
 
   # POST /steps
