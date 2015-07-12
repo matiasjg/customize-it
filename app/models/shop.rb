@@ -6,12 +6,12 @@ class Shop < ActiveRecord::Base
   TYPES = %w{ private basic }
 
   TYPES.each_with_index do |meth, index|
-    define_method("#{meth}?") { type == index }
+    define_method("#{meth}?") { payment_type == meth }
   end
 
   def self.store(session)
     unless shop = self.where(shopify_domain: session.url).first
-        shop = self.new(shopify_domain: session.url, shopify_token: session.token)
+        shop = self.new(shopify_domain: session.url, shopify_token: session.token, payment_type: 'basic')
         shop.save!
     end
     shop.id

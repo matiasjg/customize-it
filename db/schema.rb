@@ -11,13 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150709170314) do
+ActiveRecord::Schema.define(version: 20150711233937) do
 
   create_table "shops", force: :cascade do |t|
     t.string   "shopify_domain", limit: 255, null: false
     t.string   "shopify_token",  limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "payment_type",   limit: 255
   end
 
   add_index "shops", ["shopify_domain"], name: "index_shops_on_shopify_domain", unique: true, using: :btree

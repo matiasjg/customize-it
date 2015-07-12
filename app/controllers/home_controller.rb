@@ -4,8 +4,6 @@ class HomeController < ApplicationController
   layout 'embedded_app'
 
   def index
-    #@products = ShopifyAPI::Product.find(:all, :params => {:limit => 10})
-
     redirect_to url_for(:controller => 'steps', :action => 'index')
   end
 

@@ -1,5 +1,6 @@
 class StepsController < ApplicationController
   before_action :login_again_if_different_shop
+  before_action :validate_payment_type
   before_action :set_step, only: [:show, :edit, :update, :destroy]
   around_filter :shopify_session
   layout 'embedded_app'
@@ -26,6 +27,10 @@ class StepsController < ApplicationController
   # GET /steps/1/edit
   def edit
     @collections = ShopifyAPI::CustomCollection.find(:all, :params => { :published_status => "any" })
+  end
+
+  def not_allowed
+    render :status => :forbidden, :text => "Ups! this action is not allowed, contact us to upgrade your account and customize your steps!"
   end
 
   # POST /steps
@@ -70,6 +75,17 @@ class StepsController < ApplicationController
   end
 
   private
+    def validate_payment_type
+        logger.debug action_name
+        unless action_name == "not_allowed"
+            shop = Shop.find session[:shopify]
+            logger.debug shop.private?.inspect
+            if shop.private?
+                redirect_to url_for(:controller => 'steps', :action => 'not_allowed')
+            end
+        end
+    end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_step
       @step = Step.find(params[:id])
