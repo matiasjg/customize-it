@@ -16,9 +16,9 @@
 <div id="collectionsList" style="display:none">
   <br />
   Select Collection of Products for this Step:
-  <select id="linklistCollections">
+  <select id="collectionsListNames">
     <% @collections.each do |c| %>
-    <option name="<%= c.handle%>"><%= c.title%></option>
+    <option value="<%= c.handle%>"><%= c.title%></option>
     <% end %>
   </select>
   <button id="addProductsList">Add Code</button>
@@ -104,7 +104,8 @@
         });
         $("#addProductsList").click(function() {
             $("#generatedCode").slideDown();
-            $("#tmp_code").html("<pre>"+productList()+"</pre>").slideDown();
+            alert($("#collectionsListNames").val());
+            $("#tmp_code").html("<pre>"+productList($("#collectionsListNames").val())+"</pre>").slideDown();
             $("#collectionsList").slideUp();
             $("#"+lastElement).slideUp();
         });
@@ -161,7 +162,7 @@
             str += sp+"{% else %}\n";
             str += sp+sp+"{% assign alt_text = product.featured_image.alt %}\n";
             str += sp+"{% endif %}\n";
-            str += sp+lt+'a class="leather" href="/products/{{ product.handle }}-<%= params[:handle] %>" data-preview="{{ product.handle }}-<%= params[:handle] %>" title="{{ product.title | escape }}"'+gt+"\n";
+            str += sp+lt+'a class="leather" href="/products/{{ product.handle }}-'+lt+'%= params[:handle] %'+gt+'" data-preview="{{ product.handle }}-<%= params[:handle] %>" title="{{ product.title | escape }}"'+gt+"\n";
             str += sp+sp+lt+'div class="relative product_image"'+gt+"\n";
             str += sp+sp+sp+lt+'img {% if settings.align_height %}style="max-height:{{ settings.collection_height }}px"{% endif %} src="{{ \'loader.gif\' | asset_url }}" data-src="{{ product.featured_image | product_img_url: \'medium\' }}" data-src-retina="{{ product.featured_image | product_img_url: \'grande\' }}" alt="{{ alt_text | escape }}" /'+gt+"\n";
             str += sp+sp+lt+"/div"+gt+"\n";

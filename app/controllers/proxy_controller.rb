@@ -11,6 +11,8 @@ class ProxyController < ApplicationController
     else
         @step = Step.where(shop_id: session[:shopify]).order("id ASC").first
     end
+    collection = ShopifyAPI::CustomCollection.find(:all, :params => { :handle => "silver-clasp" })
+    @products = ShopifyAPI::CustomCollection.find(:all, :params => { :collection_id => collection.id })
 
     erb = ERB.new @step.html
 
