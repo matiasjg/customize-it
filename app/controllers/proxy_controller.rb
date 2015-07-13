@@ -6,17 +6,30 @@ class ProxyController < ApplicationController
   layout 'embedded_app'
 
   def index
+    lastStep = Step.where(shop_id: session[:shopify]).order("id DESC").first
+
     if params[:step_url]
         @step = Step.where(shop_id: session[:shopify], step_url: params[:step_url]).first
     else
         @step = Step.where(shop_id: session[:shopify]).order("id ASC").first
     end
-    collection = ShopifyAPI::CustomCollection.find(:all, :params => { :handle => "silver-clasp" })
-    @products = ShopifyAPI::CustomCollection.find(:all, :params => { :collection_id => collection.id })
 
-    erb = ERB.new @step.html
+    if @step.next_step_id
+        @next_step = Step.find @step.next_step_id
+    end
+    logger.debug @next_step
 
-    @resultHTML = erb.result(binding)
+    @isLastStep = false
+    if lastStep.id == @step.id
+        @isLastStep = true
+    end
+
+    # get the collection to fetch products of the step
+    collection = ShopifyAPI::CustomCollection.find(@step.collection_id)
+    @products = ShopifyAPI::Product.find(:all, :params => { :collection_id => collection.id })
+
+    #erb = ERB.new @step.html
+    #@resultHTML = erb.result(binding)
 
     render :layout => false, :content_type => 'application/liquid'
   end

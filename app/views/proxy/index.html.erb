@@ -1,7 +1,98 @@
-<h1><%= @step.name %></h1>
+<% unless params[:handle].nil? %>
+<style>
 
-<% @products.each do |product| %>
-<%= product.title %>
+.one-half-column-left {
+width:48%;
+float:left;
+}
+
+.one-half-column-right {
+width:48%;
+float:right;
+}
+
+</style>
 <% end %>
 
-<%=raw @resultHTML %>
+<h1><%= @step.name %></h1>
+
+<%
+if @products
+    @products.each do |product|
+%>
+    {% assign product = all_products['<%= product.handle %>'] %}
+    <% unless params[:handle].nil? %>
+        <% if @next_step %>
+            <a class="item" href="/apps/customize/<%= @next_step.step_url %>/{{ product.handle }}-<%= params[:handle] %>" data-preview="{{ product.handle }}-<%= params[:handle] %>">
+        <% else %>
+            <a class="item" href="/products/{{ product.handle }}-<%= params[:handle] %>" data-preview="{{ product.handle }}-<%= params[:handle] %>">
+        <% end %>
+    <% else %>
+        <% if @next_step %>
+            <a class="item" href="/apps/customize/<%= @next_step.step_url %>/{{ product.handle }}" data-preview="{{ product.handle }}">
+        <% else %>
+            <a class="item" href="#{{ product.handle }}" data-preview="{{ product.handle }}">
+        <% end %>
+    <% end %>
+        <img src="{{ product.images[0].src | product_img_url: 'medium' }}">
+        <br /> {{ product.title }}
+    </a>
+    <br />
+<%
+    end
+end
+%>
+
+
+
+
+<% unless params[:handle].nil? %>
+<br /><br />
+
+<div class="one-half-column-left">
+
+  <h3>Previews Product</h3>
+
+  {% assign previous = all_products.<%= params[:handle] %> %}
+  <img src="{{ previous.images[0].src | product_img_url: 'medium' }}"><br />
+  <a href="/apps/customize">Change It</a><br />
+
+</div>
+
+<div class="one-half-column-right">
+  <h3>Preview</h3>
+  <div id="previewImg">Select Leather</div>
+  <% if @isLastStep %>
+    <br />
+    <a href="" id="buttonCart" style="display:none">Go to Next Step</a>
+  <% end %>
+</div>
+
+
+
+<script>
+
+  $(document).ready(function() {
+
+    $("a.item").click(function (e) {
+       e.preventDefault();
+
+       loadPreviewImage($(this).data('preview'));
+       $("#buttonCart").attr('href', $(this).attr('href'));
+    });
+  });
+
+  function loadPreviewImage(handle) {
+    $("#previewImg").html("Loading ....");
+    $("#buttonCart").hide();
+    $.ajax({
+      url: "/apps/customize/show",
+      data: "handle="+handle
+    }).done(function(result) {
+      $("#previewImg").html(result);
+      $("#buttonCart").show();
+    });
+  }
+
+</script>
+<% end %>

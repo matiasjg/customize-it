@@ -1,40 +1,13 @@
-<h2>Tools to get Shopify Liquid Code</h2>
-<button id="addLinkListTemplate">Use Custom LinkList</button> or
-<button id="addCollectionsTemplate">All Collections List</button> or
-<button id="productsCollectionsTemplate">Products of Collection List</button>
+<%= form_for(@step) do |f| %>
+<h2>Select Shopify Collection</h2>
 
-<div id="linkListCollections" style="display:none">
-  <br />
-  Handle of the Custom LinkList: <input type="text" value=""  id="linkListHandle"/><br />
-  Url of Next Step (you can change this later): <input type="text" value="#put-here-url-of-next-step#"  id="urlNextSpet"/>
-  <button id="addLikListCode">Add Code</button>
-  <button id="cancelLinkListCode">Cancel</button>
-
-</div>
-
-
-<div id="collectionsList" style="display:none">
-  <br />
-  Select Collection of Products for this Step:
-  <select id="collectionsListNames">
-    <% @collections.each do |c| %>
-    <option value="<%= c.handle%>"><%= c.title%></option>
-    <% end %>
-  </select>
-  <button id="addProductsList">Add Code</button>
-  <button id="cancelProductsList">Cancel</button>
-</div>
-
-<div id="generatedCode" style="display:none">
-    <h3>Generated Code</h3>
-    <em>(Copy and Paste into the HTML box)</em>
-    <div id="tmp_code" style="display:none"></div>
-</div>
+<select id="collection_id" name="step[collection_id]">
+<%= options_from_collection_for_select(@collections, 'id', 'title', @step.collection_id) %>
+</select>
 
 
 <h2>Step Customization</h2>
 
-<%= form_for(@step) do |f| %>
   <% if @step.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@step.errors.count, "error") %> prohibited this step from being saved:</h2>
@@ -56,157 +29,18 @@
     <%= f.text_field :step_url %>
   </div>
   <div class="field">
+    Next Step:<br>
+    <select name="step[next_step_id]">
+        <option value="">[optional ]Select next step ...</option>
+        <%= options_from_collection_for_select(@nextSteps, 'id', 'name', @step.next_step_id) %>
+    </select>
+  </div>
+  <!--<div class="field">
     <%= f.label :html %><br>
     <%= f.text_area :html, :cols => 120, :rows => 18 %>
-  </div>
+  </div>-->
 
   <div class="actions">
     <%= f.submit %>
   </div>
 <% end %>
-
-
-
-<script>
-    var lastElement = '';
-    $(document).ready(function() {
-
-        $("#addLinkListTemplate").click(function() {
-            $("#linkListCollections").slideDown();
-            if (lastElement != 'linkListCollections') {
-                $("#"+lastElement).slideUp();
-            }
-            lastElement = 'linkListCollections';
-            $("#generatedCode").slideUp();
-        });
-        $("#addLikListCode").click(function() {
-            $("#"+lastElement).slideUp();
-            $("#generatedCode").slideDown();
-            $("#tmp_code").html("<pre>"+linklistCode(
-                    $("#linkListHandle").val(),
-                    $("#urlNextSpet").val()
-                )+"</pre>"
-            ).slideDown();
-            $("#linkListCollections").slideUp();
-        });
-        $("#addCollectionsTemplate").click(function() {
-            $("#generatedCode").slideDown();
-            $("#"+lastElement).slideUp();
-            $("#tmp_code").html("<pre>"+collectionsCode()+"</pre>").slideDown();
-        });
-        $("#productsCollectionsTemplate").click(function() {
-            $("#collectionsList").slideDown();
-            if (lastElement != 'collectionsList') {
-                $("#"+lastElement).slideUp();
-            }
-            lastElement = 'collectionsList';
-            $("#generatedCode").slideUp();
-        });
-        $("#addProductsList").click(function() {
-            $("#generatedCode").slideDown();
-            alert($("#collectionsListNames").val());
-            $("#tmp_code").html("<pre>"+productList($("#collectionsListNames").val())+"</pre>").slideDown();
-            $("#collectionsList").slideUp();
-            $("#"+lastElement).slideUp();
-        });
-        $("#cancelProductsList").click(function() {
-            $("#collectionsList").slideUp();
-            $("#generatedCode").slideUp();
-            $("#"+lastElement).slideUp();
-        });
-    });
-
-    function linklistCode(handleLinkList, urlNextSpet) {
-        var sp = "&nbsp;";
-        var lt = "&lt;";
-        var gt = "&gt;";
-        var str  = lt+"ul"+gt+"\n";
-            str += sp+"{% for link in linklists."+handleLinkList+".links %}\n";
-            str += sp+sp+lt+"li"+gt+lt+"a href='/apps/customize/"+urlNextSpet+"/{{ link.object.handle }}'"+gt+"{{ link.title }}"+lt+"a"+gt+lt+"/li"+gt+"\n";
-            str += sp+sp+lt+"!-- More custom code here --"+gt+"\n";
-            str += sp+"{% endfor %}\n";
-            str += lt+"/ul"+gt;
-
-        return str;
-    }
-
-    function collectionsCode() {
-        var sp = "&nbsp;";
-        var lt = "&lt;";
-        var gt = "&gt;";
-        var str  = lt+"ul"+gt+"\n";
-            str += sp+"{% for collection in collections %}\n";
-            str += sp+sp+lt+"li"+gt+lt+"a href='/apps/customize/#Next-URL-Step#'"+gt+"{{ collection.title }}"+lt+"a"+gt+lt+"/li"+gt+"\n";
-            str += sp+sp+lt+"!-- More custom code here --"+gt+"\n";
-            str += sp+"{% endfor %}\n";
-            str += lt+"/ul"+gt;
-
-        return str;
-    }
-
-    function productList(collName) {
-        var sp = "&nbsp;";
-        var lt = "&lt;";
-        var gt = "&gt;";
-        var str  = "{% capture new_row %}\n";
-            str += sp+lt+"br class='clear product_clear' /"+gt+"\n";
-            str += "{% endcapture %}\n";
-            str += "{% for product in collections."+collName+".products %}\n";
-            str += sp+"{% if product-thumbnail %}\n";
-            str += sp+sp+lt+'div class="three columns {% cycle \'alpha\', \'\', \'\', \'omega\' %} thumbnail {% cycle \'even\', \'odd\' %}"'+gt+"\n";
-            str += sp+"{% else %}\n";
-            str += sp+sp+lt+'div class="four columns {% cycle \'alpha\', \'\', \'\', \'omega\' %} thumbnail {% cycle \'even\', \'odd\' %}"'+gt+"\n";
-            str += sp+"{% endif %}\n";
-            str += sp+"{% if product.featured_image.alt contains 'youtube' or image.alt contains 'vimeo' %}\n";
-            str += sp+sp+"{% assign alt_text = product.title %}\n";
-            str += sp+"{% else %}\n";
-            str += sp+sp+"{% assign alt_text = product.featured_image.alt %}\n";
-            str += sp+"{% endif %}\n";
-            str += sp+lt+'a class="leather" href="/products/{{ product.handle }}-'+lt+'%= params[:handle] %'+gt+'" data-preview="{{ product.handle }}-<%= params[:handle] %>" title="{{ product.title | escape }}"'+gt+"\n";
-            str += sp+sp+lt+'div class="relative product_image"'+gt+"\n";
-            str += sp+sp+sp+lt+'img {% if settings.align_height %}style="max-height:{{ settings.collection_height }}px"{% endif %} src="{{ \'loader.gif\' | asset_url }}" data-src="{{ product.featured_image | product_img_url: \'medium\' }}" data-src-retina="{{ product.featured_image | product_img_url: \'grande\' }}" alt="{{ alt_text | escape }}" /'+gt+"\n";
-            str += sp+sp+lt+"/div"+gt+"\n";
-            str += sp+sp+lt+'div class="info"'+gt+lt+'span class="title"'+gt+'{{ product.title }}'+lt+'/span'+gt+lt+'/div'+gt+"\n";
-            str += sp+lt+"/a"+gt+"\n";
-            str += sp+lt+"/div"+gt+"\n";
-            str += sp+"{% cycle '', '', '', new_row %}\n";
-            str += "{% endfor %}\n";
-            str += lt+'br class="clear" /'+gt+lt+"br /"+gt+"\n";
-            str += lt+'div class="one-half-column-left"'+gt+"\n";
-            str += sp+lt+"h3"+gt+"Selected Clasp"+lt+"/h3"+gt+"\n";
-            str += sp+"{% assign clasp = all_products."+lt+"%= params[:handle] %"+gt+" %}\n";
-            str += sp+sp+lt+'img src="{{ clasp.images[0].src | product_img_url: \'medium\' }}"'+gt+lt+'br /'+gt+"\n";
-            str += sp+sp+lt+'a href="/apps/customize"'+gt+'Change Clasp'+lt+'/a'+gt+lt+'br /'+gt+"\n";
-            str += lt+"/div"+gt+"\n";
-            str += lt+'div class="one-half-column-right"'+gt+"\n";
-            str += lt+"h3"+gt+"Preview"+lt+"/h3"+gt+"\n";
-            str += lt+'div id="previewImg"'+gt+'Select Leather'+lt+'/div'+gt+"\n";
-            str += sp+lt+'br /'+gt+lt+'br /'+gt+"\n";
-            str += sp+lt+'a href="" id="buttonCart" style="display:none"'+gt+'Go To Step 3'+lt+'/a'+gt+"\n";
-            str += lt+'/div'+gt+"\n";
-            str += lt+'br /'+gt+lt+'br/'+gt+"\n";
-            str += lt+'script'+gt+"\n";
-            str += sp+sp+"$(document).ready(function() {\n";
-            str += sp+sp+sp+'$("a.leather").click(function (e) {'+"\n";
-            str += sp+sp+sp+sp+'e.preventDefault();'+"\n";
-            str += sp+sp+sp+sp+"loadPreviewImage($(this).data('preview'));"+"\n";
-            str += sp+sp+sp+sp+'$("#buttonCart").attr("href", $(this).attr("href"));'+"\n";
-            str += sp+sp+sp+'});'+"\n";
-            str += sp+sp+'});'+"\n";
-            str += sp+sp+'function loadPreviewImage(handle) {'+"\n";
-            str += sp+sp+sp+'$("#previewImg").html("Loading ....");'+"\n";
-            str += sp+sp+sp+'$("#buttonCart").hide();'+"\n";
-            str += sp+sp+sp+'$.ajax({'+"\n";
-            str += sp+sp+sp+sp+'url: "/apps/customize/show",'+"\n";
-            str += sp+sp+sp+sp+'data: "handle="+handle'+"\n";
-            str += sp+sp+sp+'}).done(function(result) {'+"\n";
-            str += sp+sp+sp+sp+'$("#previewImg").html(result);'+"\n";
-            str += sp+sp+sp+sp+'$("#buttonCart").show();'+"\n";
-            str += sp+sp+sp+'});'+"\n";
-            str += sp+sp+'}'+"\n";
-            str += lt+'/script'+gt+"\n";
-
-        return str;
-    }
-
-</script>

@@ -19,6 +19,7 @@ class StepsController < ApplicationController
   # GET /steps/new
   def new
     @collections = ShopifyAPI::CustomCollection.find(:all, :params => { :published_status => "any" })
+    @nextSteps = Step.where shop_id: session[:shopify]
 
     @step = Step.new
     @step.shop_id = session[:shopify]
@@ -27,6 +28,7 @@ class StepsController < ApplicationController
   # GET /steps/1/edit
   def edit
     @collections = ShopifyAPI::CustomCollection.find(:all, :params => { :published_status => "any" })
+    @nextSteps = Step.where("id != ? AND shop_id = ?", params[:id], session[:shopify])
   end
 
   def not_allowed
@@ -93,6 +95,6 @@ class StepsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def step_params
-      params.require(:step).permit(:name, :step_url, :html)
+      params.require(:step).permit(:name, :step_url, :html, :collection_id, :next_step_id)
     end
 end
