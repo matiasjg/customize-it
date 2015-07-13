@@ -1,53 +1,64 @@
-<% unless params[:handle].nil? %>
 <style>
 
 .one-half-column-left {
-width:48%;
-float:left;
-}
-
-.one-half-column-right {
-width:48%;
-float:right;
-}
-
-.item {
+    width:48%;
     float:left;
 }
 
+.one-half-column-right {
+    width:48%;
+    float:right;
+}
+
 </style>
-<% end %>
 
 <h1><%= @step.name %></h1>
 
+
 <%
 if @products
-    @products.each do |product|
+    @products.each_slice(4) do |slice|
 %>
-    {% assign product = all_products['<%= product.handle %>'] %}
-    <% unless params[:handle].nil? %>
-        <% if @next_step %>
-            <a class="item" href="/apps/customize/<%= @next_step.step_url %>/{{ product.handle }}-<%= params[:handle] %>" data-preview="{{ product.handle }}-<%= params[:handle] %>">
+    <% slice.each do |product| %>
+        {% assign product = all_products['<%= product.handle %>'] %}
+
+        <div class="four columns thumbnail">
+
+        {% if product.featured_image.alt contains 'youtube' or image.alt contains 'vimeo' %}
+            {% assign alt_text = product.title %}
+        {% else %}
+            {% assign alt_text = product.featured_image.alt %}
+        {% endif %}
+
+
+        <% unless params[:handle].nil? %>
+            <% if @next_step %>
+                <a class="item" href="/apps/customize/<%= @next_step.step_url %>/{{ product.handle }}-<%= params[:handle] %>" data-preview="{{ product.handle }}-<%= params[:handle] %>">
+            <% else %>
+                <a class="item" href="/products/{{ product.handle }}-<%= params[:handle] %>" data-preview="{{ product.handle }}-<%= params[:handle] %>">
+            <% end %>
         <% else %>
-            <a class="item" href="/products/{{ product.handle }}-<%= params[:handle] %>" data-preview="{{ product.handle }}-<%= params[:handle] %>">
+            <% if @next_step %>
+                <a class="item" href="/apps/customize/<%= @next_step.step_url %>/{{ product.handle }}" data-preview="{{ product.handle }}">
+            <% else %>
+                <a class="item" href="#{{ product.handle }}" data-preview="{{ product.handle }}">
+            <% end %>
         <% end %>
-    <% else %>
-        <% if @next_step %>
-            <a class="item" href="/apps/customize/<%= @next_step.step_url %>/{{ product.handle }}" data-preview="{{ product.handle }}">
-        <% else %>
-            <a class="item" href="#{{ product.handle }}" data-preview="{{ product.handle }}">
-        <% end %>
+
+            <div class="relative product_image">
+               <img {% if settings.align_height %}style="max-height:{{ settings.collection_height }}px"{% endif %} src="{{ 'loader.gif' | asset_url }}" data-src="{{ product.featured_image | product_img_url: 'medium' }}" alt="{{ alt_text | escape }}" />
+            </div>
+
+            <div class="info"><span class="title">{{ product.title }}</span></div>
+
+        </a>
+    </div>
     <% end %>
-        <img src="{{ product.images[0].src | product_img_url: 'medium' }}">
-        <br /> {{ product.title }}
-    </a>
-    <br />
+    <br class="clear" />
 <%
     end
 end
 %>
-
-
 
 
 <% unless params[:handle].nil? %>
