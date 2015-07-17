@@ -5,22 +5,32 @@
 <table>
   <thead>
     <tr>
-      <th>Step #</th>
+      <th>Step Id</th>
       <th>Name</th>
-      <th>Url Key</th>
+      <th>Url</th>
+      <th>Only Customers</th>
+      <th>Next Step Name</th>
       <th colspan="3"></th>
     </tr>
   </thead>
 
   <tbody>
-    <% @steps.each_with_index do |step, index| %>
+    <% @steps.each_with_index do |s, index| %>
       <tr>
-        <td><%= index+1 %></td>
-        <td><%= step.name %></td>
-        <td><%= step.step_url %></td>
-        <td><%= link_to 'Show', step %></td>
-        <td><%= link_to 'Edit', edit_step_path(step) %></td>
-        <td><%= link_to 'Destroy', step, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= s.id %></td>
+        <td><%= s.name %></td>
+        <td><%= s.step_url %></td>
+        <td><% if s.only_customer %>Yes<% else %>No (Public)<% end %></td>
+        <td>
+        <% if s.next_step_id %>
+            <%= s.next_step_id %>
+        <% else %>
+            N/A
+        <% end %>
+        </td>
+        <td><%= link_to 'Show', s %></td>
+        <td><%= link_to 'Edit', edit_step_path(s) %></td>
+        <td><%= link_to 'Destroy', s, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
@@ -28,4 +38,4 @@
 
 <br>
 
-<%= link_to 'New Step', new_step_path %>
+<%= link_to 'New Step', new_step_path %> | <%= link_to "Webhooks", 'webhooks' %>

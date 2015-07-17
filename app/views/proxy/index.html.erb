@@ -1,5 +1,5 @@
+<% unless @resultHTML %>
 <style>
-
 .one-half-column-left {
     width:48%;
     float:left;
@@ -33,20 +33,20 @@ if @products
 
         <% unless params[:handle].nil? %>
             <% if @next_step %>
-                <a class="item" href="/apps/customize/<%= @next_step.step_url %>/{{ product.handle }}-<%= params[:handle] %>" data-preview="{{ product.handle }}-<%= params[:handle] %>">
+                <a class="item" href="/apps/customize/<%= @next_step.step_url %>/{{ product.handle }}-<%= params[:handle] %>{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}" data-preview="{{ product.handle }}-<%= params[:handle] %>">
             <% else %>
                 <a class="item" href="/products/{{ product.handle }}-<%= params[:handle] %>" data-preview="{{ product.handle }}-<%= params[:handle] %>">
             <% end %>
         <% else %>
             <% if @next_step %>
-                <a class="item" href="/apps/customize/<%= @next_step.step_url %>/{{ product.handle }}" data-preview="{{ product.handle }}">
+                <a class="item" href="/apps/customize/<%= @next_step.step_url %>/{{ product.handle }}{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}" data-preview="{{ product.handle }}">
             <% else %>
                 <a class="item" href="#{{ product.handle }}" data-preview="{{ product.handle }}">
             <% end %>
         <% end %>
 
             <div class="relative product_image">
-               <img {% if settings.align_height %}style="max-height:{{ settings.collection_height }}px"{% endif %} src="{{ 'loader.gif' | asset_url }}" data-src="{{ product.featured_image | product_img_url: 'medium' }}" alt="{{ alt_text | escape }}" />
+               <img {% if settings.align_height %}style="max-height:{{ settings.collection_height }}px"{% endif %} src="{{ product.images[0].src | product_img_url: 'medium' }}" alt="{{ alt_text | escape }}" />
             </div>
 
             <div class="info"><span class="title">{{ product.title }}</span></div>
@@ -66,7 +66,7 @@ end
 
 <div class="one-half-column-left">
 
-  <h3>Previews Product</h3>
+  <h3>Selected Product</h3>
 
   {% assign previous = all_products.<%= params[:handle] %> %}
   <img src="{{ previous.images[0].src | product_img_url: 'medium' }}"><br />
@@ -76,11 +76,10 @@ end
 
 <div class="one-half-column-right">
   <h3>Preview</h3>
-  <div id="previewImg">Select Leather</div>
-  <% if @isLastStep %>
-    <br />
-    <a href="" id="buttonCart" style="display:none">Go to Next Step</a>
-  <% end %>
+  <div id="previewImg">Select Item</div>
+
+  <br />
+  <a href="" id="buttonCart" style="display:none">Go to Next Step</a>
 </div>
 
 
@@ -110,4 +109,12 @@ end
   }
 
 </script>
+<% end %>
+
+<% else %>
+
+<%=raw @resultHTML %>
+<br class="clear" style="clear:both;" />
+<a href="javascript:history.go(-1);" style="float:left;">Go Back</a> | <a id="nextStepLink" href="<% if @next_step %>/apps/customize/<%= @next_step.step_url %>/<%= params[:handle] %>{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}<% else %>/products/<%= params[:handle] %><% end %>"  style="float:right;">Go To Next Step</a>
+
 <% end %>

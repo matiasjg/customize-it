@@ -3,7 +3,13 @@ Rails.application.routes.draw do
   root :to => 'home#index'
 
   get 'steps/not-allowed', to: 'steps#not_allowed'
+
   resources :steps
+
+  post 'webhooks/orders/create', to: 'webhooks#order_create'
+  delete 'webhook/:id', to: 'webhooks#destroy'
+  get 'webhooks', to: 'webhooks#index'
+  post 'webhooks', to: 'webhooks#create'
 
   get 'proxy', to: 'proxy#index'
   get 'proxy/show', to: 'proxy#show'

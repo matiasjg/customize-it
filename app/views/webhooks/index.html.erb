@@ -1,0 +1,38 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Webhooks</h1>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Topic</th>
+      <th>Created At</th>
+      <th>Format</th>
+      <th>Tools</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @hooks.each_with_index do |wh, index| %>
+      <tr>
+        <td><%= wh.id %></td>
+        <td><%= wh.topic %></td>
+        <td><%= wh.created_at %></td>
+        <td><%= wh.format %></td>
+        <td><%= link_to 'Destroy', "/webhook/"+wh.id.to_s , method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<hr />
+
+<form name="" method="POST" action="/webhooks">
+<%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+<label>Select Topic:</label>
+<select name="topic">
+    <option value="orders/create">orders/create</option>
+    <option value="orders/delete">orders/delete</option>
+    <option value="orders/cancelled">orders/cancelled</option>
+</select>
+<input type="submit" value="Add">
+</form>

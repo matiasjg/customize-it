@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150713195005) do
+ActiveRecord::Schema.define(version: 20150717162717) do
 
   create_table "shops", force: :cascade do |t|
     t.string   "shopify_domain", limit: 255, null: false
@@ -32,6 +32,14 @@ ActiveRecord::Schema.define(version: 20150713195005) do
     t.string   "step_url",      limit: 255
     t.string   "collection_id", limit: 255
     t.integer  "next_step_id",  limit: 4
+    t.boolean  "only_customer", limit: 1
+    t.boolean  "is_custom",     limit: 1
+  end
+
+  create_table "webhook_calls", force: :cascade do |t|
+    t.integer  "order_id",   limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
   end
 
 end
