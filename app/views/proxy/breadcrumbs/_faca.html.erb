@@ -1,0 +1,5 @@
+<ul class="rows-links">
+  <% (0..@actualStepNumber-2).each do |i| %>
+  <li class="first-row"><a href="javascript:history.go(-<%= @actualStepNumber-i-1 %>);"><%= @allSteps[i].name %></a></li>
+  <% end %>
+</ul>

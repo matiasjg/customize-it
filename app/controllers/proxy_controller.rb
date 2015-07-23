@@ -7,12 +7,35 @@ class ProxyController < ApplicationController
   layout 'embedded_app'
 
   def index
-    lastStep = Step.where(shop_id: session[:shopify]).order("id DESC").first
+    lastStep  = Step.where(shop_id: session[:shopify]).order("id DESC").first
+    @allSteps = Step.where(shop_id: session[:shopify]).order("id ASC")
+    firstStep = Step.where(shop_id: session[:shopify]).order("id ASC").first
 
     if params[:step_url]
         @step = Step.where(shop_id: session[:shopify], step_url: params[:step_url]).first
     else
-        @step = Step.where(shop_id: session[:shopify]).order("id ASC").first
+        @step = firstStep
+    end
+
+    @actualStepNumber = 1
+    previousStepId    = firstStep.id;
+    @allSteps.each do |stepListItem|
+        if stepListItem.id != @step.id
+            @actualStepNumber += 1
+            if @actualStepNumber > 2
+                previousStepId = stepListItem.id;
+            end
+        else
+            break
+        end
+    end
+
+    if previousStepId == firstStep.id
+        @previousStep = firstStep
+    elsif previousStepId == lastStep.id
+        @previousStep = lastStep
+    else
+        @previousStep = Step.find previousStepId
     end
 
     show_step = true;
@@ -43,14 +66,20 @@ class ProxyController < ApplicationController
         # get the collection to fetch products of the step
         unless @step.is_custom?
             @resultHTML = false
-            collection = ShopifyAPI::CustomCollection.find(@step.collection_id)
-            @products = ShopifyAPI::Product.find(:all, :params => { :collection_id => collection.id })
+            if @step.collection_id != ''
+                collection = ShopifyAPI::CustomCollection.find(@step.collection_id)
+                @products = ShopifyAPI::Product.find(:all, :params => { :collection_id => collection.id })
+            end
         else
             erb = ERB.new @step.html
             @resultHTML = erb.result(binding)
         end
 
-        render :layout => false, :content_type => 'application/liquid'
+        unless File.exists?(Rails.root.join("app", "views", params[:controller], session[:host]+".html.erb"))
+            render :layout => false, :content_type => 'application/liquid'
+        else
+            render :template => "proxy/"+session[:host]+".html.erb" ,:layout => false, :content_type => 'application/liquid'
+        end
     end
   end
 

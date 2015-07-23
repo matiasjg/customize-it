@@ -38,6 +38,7 @@
   <div class="field" id="useCollection" <% if @step.is_custom %> style="display:none;" <% end %>>
     Use Shopify Collection:<br />
     <select id="collection_id" name="step[collection_id]">
+        <option value="">[None]</option>
         <%= options_from_collection_for_select(@collections, 'id', 'title', @step.collection_id) %>
     </select>
   </div>
