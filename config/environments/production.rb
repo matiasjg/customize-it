@@ -77,7 +77,7 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.shopify_app_key = 'a91bb12531df33a116c9cacebddc980b'
-  config.shopify_app_secret = '17d9275e93153af4ac02b45a74156523'
+  config.shopify_app_key = '8ee0c39b93c60ad2557a6568e510f39d'
+  config.shopify_app_secret = '6807b6b9975612920a06d726459232af'
   config.shopify_domain_app = 'https://customizeit.herokuapp.com/'
 end
