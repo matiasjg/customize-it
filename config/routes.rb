@@ -1,5 +1,20 @@
 Rails.application.routes.draw do
 
+
+  get 'admin', to: 'admin#index'
+  get 'admin/login'
+  post 'admin/login', to: 'admin#login_check'
+  get 'admin/logout'
+  get 'admin/shops'
+  get 'admin/shops/:id', to: 'admin#edit_store'
+  patch 'admin/shops/:id', to: 'admin#update_store'
+  get 'admin/delete_store'
+
+  scope '/admin' do
+    resources :users
+    resources :shops, :only => [:index, :show]
+  end
+
   root :to => 'home#index'
 
   get 'steps/not-allowed', to: 'steps#not_allowed'

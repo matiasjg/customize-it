@@ -1,0 +1,31 @@
+<h1>Admin Edit Store</h1>
+<%= form_for(@shop) do |f| %>
+
+  <% if @shop.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@step.errors.count, "error") %> prohibited this step from being saved:</h2>
+
+      <ul>
+      <% @step.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :shopify_domain %><br>
+    <%= @shop.shopify_domain %>
+  </div>
+  <div class="field">
+    Payment Type:<br>
+    <select name="shop[payment_type]">
+        <option value="basic">Normal Setup (customization available)</option>
+        <option value="private">Private (Only available for us)</option>
+    </select>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

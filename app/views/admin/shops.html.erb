@@ -1,0 +1,27 @@
+<h1>Admin Stores</h1>
+<p id="notice"><%= notice %></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Store Id</th>
+      <th>Shopify Domain</th>
+      <th>Payment Type</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @stores.each_with_index do |s, index| %>
+      <tr>
+        <td><%= s.id %></td>
+        <td><%= s.shopify_domain %></td>
+        <td><%= s.payment_type %></td>
+
+        <td><%= link_to 'Edit Payment Type', "/admin/shops/"+s.id.to_s  %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<br /><br />
+<a href="/admin">Admin Dashboard</a>

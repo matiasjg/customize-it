@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150717162717) do
+ActiveRecord::Schema.define(version: 20150724200347) do
 
   create_table "shops", force: :cascade do |t|
     t.string   "shopify_domain", limit: 255, null: false
@@ -34,6 +34,14 @@ ActiveRecord::Schema.define(version: 20150717162717) do
     t.integer  "next_step_id",  limit: 4
     t.boolean  "only_customer", limit: 1
     t.boolean  "is_custom",     limit: 1
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.string   "email",      limit: 255
+    t.string   "password",   limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   create_table "webhook_calls", force: :cascade do |t|
