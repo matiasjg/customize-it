@@ -26,6 +26,25 @@
 </table>
 <hr />
 
+<h1>Metafield Example</h1>
+<pre>[{"id": "1154986501","count": 1, "variant_id": "3643748997"}, {"id": "1160420549", "count": 1}]</pre>
+<ul>
+    <li>
+        <ul>
+            <li>id: sub-product id</li>
+            <li>count: count of sub-products</li>
+            <li>variant_id[optional]: id of the variant of the sub-product</li>
+        </ul>
+    </li>
+    <li>
+        <ul>
+            <li>id: sub-product id</li>
+            <li>count: count of sub-products</li>
+        </ul>
+    </li>
+</ul>
+
+
 <form name="" method="POST" action="/webhooks">
 <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 <label>Select Topic:</label>
