@@ -20,8 +20,9 @@
         <div class="sixteen columns h-center">
             <%= render "proxy/breadcrumbs/faca" %>
 
-            {% assign previous = all_products.<%= params[:handle] %> %}
-            <img src="{{ previous.images[0].src | product_img_url: 'large' }}"><br />
+            {% assign preview = all_products.<%= params[:handle] %> %}
+            <img src="{{ preview.images[0].src | product_img_url: 'large' }}"><br />
+            {{ preview.description }}<br />
             <br /><a href="/products/<%= params[:handle] %>" class="btn">View Product</a>
         </div>
     <% else %>
