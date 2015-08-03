@@ -7,7 +7,7 @@ class ProxyController < ApplicationController
   layout 'embedded_app'
 
   def index
-    lastStep  = Step.where(shop_id: session[:shopify]).order("id DESC").first
+    @lastStep  = Step.where(shop_id: session[:shopify]).order("id DESC").first
     @allSteps = Step.where(shop_id: session[:shopify]).order("id ASC")
     firstStep = Step.where(shop_id: session[:shopify]).order("id ASC").first
 
@@ -32,8 +32,8 @@ class ProxyController < ApplicationController
 
     if previousStepId == firstStep.id
         @previousStep = firstStep
-    elsif previousStepId == lastStep.id
-        @previousStep = lastStep
+    elsif previousStepId == @lastStep.id
+        @previousStep = @lastStep
     else
         @previousStep = Step.find previousStepId
     end
@@ -56,8 +56,13 @@ class ProxyController < ApplicationController
     end
 
     @isLastStep = false
-    if lastStep.id == @step.id
+    if @lastStep.id == @step.id
         @isLastStep = true
+    end
+
+    @isFirstStep = false
+    if firstStep.id == @step.id
+        @isFirstStep = true
     end
 
     unless show_step
@@ -69,6 +74,18 @@ class ProxyController < ApplicationController
             if @step.collection_id != ''
                 collection = ShopifyAPI::CustomCollection.find(@step.collection_id)
                 @products = ShopifyAPI::Product.find(:all, :params => { :collection_id => collection.id })
+
+                url_found_in_handle = ''
+                unless params[:gtl].nil?
+                    @products.each do |prod|
+                        if prod.handle.in? params[:handle]
+                            if prod.handle.length > url_found_in_handle.length
+                                url_found_in_handle = prod.handle
+                            end
+                        end
+                    end
+                    params[:handle][url_found_in_handle] = ''
+                end
             end
         else
             erb = ERB.new @step.html

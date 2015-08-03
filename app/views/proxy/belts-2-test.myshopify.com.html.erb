@@ -50,10 +50,18 @@
 
 
                 <% unless params[:handle].nil? %>
-                    <% if @next_step %>
-                        <a href="/apps/customize-test/<%= @next_step.step_url %>/{{ product.handle }}-<%= params[:handle] %>{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}" data-preview="{{ product.handle }}-<%= params[:handle] %>">
+                    <% unless params[:gtl].nil? %>
+                        <% if @isFirstStep %>
+                            <a href="/apps/customize-test/<%= @lastStep.step_url %>/<%= params[:handle] %>{{ product.handle }}{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}" data-preview="{{ product.handle }}-<%= params[:handle] %>">
+                        <% else %>
+                            <a href="/apps/customize-test/<%= @lastStep.step_url %>/{{ product.handle }}<%= params[:handle] %>{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}" data-preview="{{ product.handle }}-<%= params[:handle] %>">
+                        <% end %>
                     <% else %>
-                        <a href="/products/{{ product.handle }}-<%= params[:handle] %>" data-preview="{{ product.handle }}-<%= params[:handle] %>">
+                        <% if @next_step %>
+                            <a href="/apps/customize-test/<%= @next_step.step_url %>/{{ product.handle }}-<%= params[:handle] %>{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}" data-preview="{{ product.handle }}-<%= params[:handle] %>">
+                        <% else %>
+                            <a href="/products/{{ product.handle }}-<%= params[:handle] %>" data-preview="{{ product.handle }}-<%= params[:handle] %>">
+                        <% end %>
                     <% end %>
                 <% else %>
                     <% if @next_step %>
