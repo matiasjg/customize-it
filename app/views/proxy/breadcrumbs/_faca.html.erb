@@ -1,5 +1,5 @@
 <ul class="rows-links">
   <% (0..@actualStepNumber-2).each do |i| %>
-  <li class="first-row"><a href="/apps/customize-test/<%= @allSteps[i].step_url %>/<%= params[:handle]+"?gtl=true" if @isLastStep %>"><%= @allSteps[i].name %></a></li>
+  <li class="first-row"><a href="/apps/customize/<%= @allSteps[i].step_url %>/<%= params[:handle]+"?gtl=true" if @isLastStep %>"><%= @allSteps[i].name %></a></li>
   <% end %>
 </ul>

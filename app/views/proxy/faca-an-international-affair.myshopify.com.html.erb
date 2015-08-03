@@ -52,9 +52,9 @@
                 <% unless params[:handle].nil? %>
                     <% unless params[:gtl].nil? %>
                         <% if @isFirstStep %>
-                            <a href="/apps/customize-test/<%= @lastStep.step_url %>/{{ product.handle }}<%= params[:handle] %>{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}">
+                            <a href="/apps/customize/<%= @lastStep.step_url %>/{{ product.handle }}<%= params[:handle] %>{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}">
                         <% else %>
-                            <a href="/apps/customize-test/<%= @lastStep.step_url %>/<%= params[:handle] %>{{ product.handle }}{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}">
+                            <a href="/apps/customize/<%= @lastStep.step_url %>/<%= params[:handle] %>{{ product.handle }}{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}">
                         <% end %>
                     <% else %>
                         <% if @next_step %>
