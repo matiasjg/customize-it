@@ -1,101 +1,108 @@
-<% unless @resultHTML %>
-    <style><!--
-    #owl-demo .item, #owl-demo2 .item{
-            margin: 3px;
-        }
-    #owl-demo .item img,  #owl-demo2 .item img{
-            display: block;
-            width: 100%;
-            height: auto;
-        }
-
-    .owl-pagination {display:none}
-    .collection_title {display:none!important}
-    --></style>
-
-
-    <% if @isLastStep %>
-        <br />
-        <br />
-        <div class="sixteen columns h-center">
-            <%= render "proxy/breadcrumbs/faca" %>
-
-            {% assign preview = all_products.<%= params[:handle] %> %}
-            <img src="{{ preview.images[0].src | product_img_url: 'large' }}"><br />
-            {{ preview.description }}<br />
-            <br /><a href="/products/<%= params[:handle] %>" class="btn">View Product</a>
-        </div>
-    <% else %>
-
-        <div>
-          <h1 class="h-center"><%= @step.name %></h1>
-
-          <% unless params[:handle].nil? %>
-            <%= render "proxy/breadcrumbs/faca" %>
-          <% end %>
-
-          <div id="owl-demo" class="owl-carousel">
-
-            <% if @products %>
-            <% @products.each do |product| %>
-
-            {% assign product = all_products['<%= product.handle %>'] %}
-            <div class="item">
-
-            {% if product.featured_image.alt contains 'youtube' or image.alt contains 'vimeo' %}
-                {% assign alt_text = product.title %}
-            {% else %}
-                {% assign alt_text = product.featured_image.alt %}
-            {% endif %}
-
-
-                <% unless params[:handle].nil? %>
-                    <% unless params[:gtl].nil? %>
-                        <% if @isFirstStep %>
-                            <a href="/apps/customize-test/<%= @lastStep.step_url %>/<%= params[:handle] %>{{ product.handle }}{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}" data-preview="{{ product.handle }}-<%= params[:handle] %>">
-                        <% else %>
-                            <a href="/apps/customize-test/<%= @lastStep.step_url %>/{{ product.handle }}<%= params[:handle] %>{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}" data-preview="{{ product.handle }}-<%= params[:handle] %>">
-                        <% end %>
-                    <% else %>
-                        <% if @next_step %>
-                            <a href="/apps/customize-test/<%= @next_step.step_url %>/{{ product.handle }}-<%= params[:handle] %>{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}" data-preview="{{ product.handle }}-<%= params[:handle] %>">
-                        <% else %>
-                            <a href="/products/{{ product.handle }}-<%= params[:handle] %>" data-preview="{{ product.handle }}-<%= params[:handle] %>">
-                        <% end %>
-                    <% end %>
-                <% else %>
-                    <% if @next_step %>
-                        <a href="/apps/customize-test/<%= @next_step.step_url %>/{{ product.handle }}{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}" data-preview="{{ product.handle }}">
-                    <% else %>
-                        <a href="#{{ product.handle }}" data-preview="{{ product.handle }}">
-                    <% end %>
-                <% end %>
-                      <img class="lazyOwl" data-src="{{ product.images[0].src | product_img_url: 'medium' }}" alt="{{ alt_text | escape }}" />
-                    </a>
+<div class="custom-product">
+    <div class="row">
+        <div class="twelve columns h-center">
+            <div class="main-pic">
+                <div id="previewImg"></div>
+                <h3 class="price" style="display:none">Price: <span id="selectedPrice"></span></h3>
             </div>
-            <% end %>
-            <% end %>
-
-          </div>
         </div>
-    <% end %>
 
+        <div class="four columns sidebar">
+            <div class="clasp  h-center">
+                <h1>Choose Your Clasp</h1>
+                <% if @products %>
+                <ul>
+                    <% @products.each_with_index do |product, index| %>
+                        {% assign product = all_products['<%= product.handle %>'] %}
+                        {% assign alt_text = product.featured_image.alt %}
+                        <li id="clasp_{{ product.handle }}" <%="class=selected" if index == 0 %>>
+                            <% if index == 0 %>
+                                {% assign handle = product.handle %}
+                            <% end %>
+                            <a href="/apps/customize-test/<%= @next_step.step_url %>/{{ product.handle }}" data-preview="{{ product.handle }}" class="claspLink">
+                                <img src="{{ product.images[0].src | product_img_url: 'compact' }}" alt="{{ alt_text | escape }}" />
+                            </a>
+                        </li>
+                    <% end %>
+                </ul>
+                <% end %>
+            </div>
+        </div>
+    </div>
 
+    <div class="row" id="leathers" style="display:none">
+        <div class="col-md-12 h-center">
+            <div class="clr-n-style">
+                <h2>Choose Youre Leather</h2>
+                <div id="leather-list">
+                    Loading ...
+                </div>
+            </div>
+        </div>
+    </div>
 
-<script>// <![CDATA[
+    <div class="row">
+        <div class="col-md-10  place-center">
+            <h4 class="h-center">Description</h4>
+            <p id="selectedDescription">
+                Loading ...
+            </p>
+        </div>
+    </div>
+
+    <div class="row" id="variants-list">
+        <div class="col-md-10  place-center size h-center">
+            <h2>Select Your Size</h2>
+            <div id="selectedVariants">
+                Loading ...
+            </div>
+        </div>
+        <div class="h-center size-gude"><a href="#"> Size Guide</a> </div>
+        <div class="h-center add-to-cart" style="display:none;" id="addToCartBtn"><a href="/cart/add" onclick="var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href; var v = document.createElement('input'); v.setAttribute('type', 'hidden'); v.setAttribute('name', 'id'); v.setAttribute('value', variant); f.appendChild(v); f.submit(); return false;"> Add to Cart</a> </div>
+    </div>
+</div>
+
+<script>
+var claspHandle = '{{ handle }}';
+var leatherHandle = '';
+var variant = '';
 $(document).ready(function() {
-    $("#owl-demo").owlCarousel({
-      items : 4,
-      lazyLoad : true,
-      navigation : true
+    $.ajax({
+      url: "/apps/customize-test/step/<%= @step.next_step_id %>",
+    }).done(function(result) {
+        $("#leathers").show();
+        $("#leather-list").html(result);
+    });
+
+    $("a.claspLink").click(function(e) {
+        e.preventDefault();
+        $("li#clasp_"+claspHandle).removeClass('selected');
+        claspHandle = $(this).data('preview');
+        $("li#clasp_"+claspHandle).addClass('selected');
+        loadPreview();
     });
 });
-// ]]></script>
 
-<% else %>
+function loadPreview() {
+    $.ajax({
+      url: "/apps/customize-test/show",
+      data: "handle="+leatherHandle+"-"+claspHandle+"&size=large"
+    }).done(function(result) {
+      $("#previewImg").html(result);
+      $("#selectedDescription").html($("#descriptionShow").html());
+      $("#selectedPrice").html($("#priceShow").html());
+      $("#selectedVariants").html($("#variantsShow").html());
+      $("#variants-list").show();
+      $('h3.price').show();
+      $("a.sizeBtn").click(function(e) {
+          e.preventDefault();
+          $("li#livariant_"+variant).removeClass('selected');
+          variant = $(this).data('id');
+          $("li#livariant_"+variant).addClass('selected');
+          $("#selectedPrice").html($(this).data('price'));
+          $("#addToCartBtn").show();
+      });
+    });
+}
 
-    <%=raw @resultHTML %>
-    <br class="clear" style="clear:both;" />
-    <a href="javascript:history.go(-1);" style="float:left;">Go Back</a> | <a id="nextStepLink" href="<% if @next_step %>/apps/customize/<%= @next_step.step_url %>/<%= params[:handle] %>{% if customer %}?u={{ customer.id }}&h={{ customer.email | md5 }}{% endif %}<% else %>/products/<%= params[:handle] %><% end %>"  style="float:right;">Go To Next Step</a>
-
-<% end %>
+</script>

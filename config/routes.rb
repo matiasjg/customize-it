@@ -28,6 +28,7 @@ Rails.application.routes.draw do
 
   get 'proxy', to: 'proxy#index'
   get 'proxy/show', to: 'proxy#show'
+  get 'proxy/step/:step_id', to: 'proxy#get_setp_info'
   get 'proxy/:step_url/', to: 'proxy#index'
   get 'proxy/:step_url/:handle/', to: 'proxy#index'
 

@@ -1,4 +1,14 @@
 {% layout none %}
 {% assign preview = all_products.<%= params[:handle] %> %}
 
-<img src="{{ preview.images[0].src | product_img_url: 'medium' }}">
+<img src="{{ preview.images[0].src | product_img_url: '<%= @size %>' }}">
+
+<div id="descriptionShow" style="display:none">{{ preview.description}}</div>
+<div id="priceShow" style="display:none">{{ preview.price | money }}</div>
+<div id="variantsShow" style="display:none">
+    <ul>
+    {% for variant in preview.variants %}
+        <li id="livariant_{{ variant.id }}"><a href="#" class="sizeBtn" data-id="{{ variant.id }}" data-price="{{ variant.price | money }}">{{ variant.title }}</a></li>
+    {% endfor %}
+    </ul>
+</div>

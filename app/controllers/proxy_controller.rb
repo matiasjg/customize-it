@@ -100,23 +100,44 @@ class ProxyController < ApplicationController
     end
   end
 
+  #for ajax usage
+  def get_setp_info
+    @step = Step.where(shop_id: session[:shopify], id: params[:step_id]).first
+    if @step.collection_id != ''
+        collection = ShopifyAPI::CustomCollection.find(@step.collection_id)
+        @products = ShopifyAPI::Product.find(:all, :params => { :collection_id => collection.id })
+    end
+
+    render :template => "proxy/steps/"+@step.step_url+".html.erb" ,:layout => false, :content_type => 'application/liquid'
+  end
+
+  # preview complete product
+  def get_product_info
+    product = ShopifyAPI::Product.find(:all, :params => { :handle => params[:handle] }).first
+  end
+
   # preview image
   def show
+    @size = 'medium'
+    logger.debug params[:size].inspect
+    unless params[:size].nil?
+        @size = params[:size]
+    end
     render :layout => false, :content_type => 'application/liquid'
   end
 
 
   def set_shopify_session
-      if params[:shop]
-        host = params[:shop]
-        unless session[:shopify]
-            shop = Shop.find_by shopify_domain: host
-        end
-      end
-
-      session[:host] = host
+    if params[:shop]
+      host = params[:shop]
       unless session[:shopify]
-        session[:shopify] = shop.id
+          shop = Shop.find_by shopify_domain: host
       end
     end
+
+    session[:host] = host
+    unless session[:shopify]
+      session[:shopify] = shop.id
+    end
+  end
 end

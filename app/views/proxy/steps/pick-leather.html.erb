@@ -1,0 +1,31 @@
+{% layout none %}
+
+<% if @products %>
+<ul>
+    <% @products.each_with_index do |product, index| %>
+        {% assign product = all_products['<%= product.handle %>'] %}
+        {% assign alt_text = product.featured_image.alt %}
+        <li <%="class=selected" if index == 0 %>>
+            <% if index == 0 %>
+                {% assign handle = product.handle %}
+            <% end %>
+            <a href="{{ product.handle }}" data-preview="{{ product.handle }}" class="leatherLink">
+                <img src="{{ product.images[0].src | product_img_url: 'compact' }}" alt="{{ alt_text | escape }}" />
+            </a>
+            <span>{{ product.title }}</span>
+        </li>
+    <% end %>
+</ul>
+<% end %>
+
+<script>
+leatherHandle = '{{ handle }}';
+loadPreview();
+$(document).ready(function() {
+    $("a.leatherLink").click(function(e) {
+        e.preventDefault();
+        leatherHandle = $(this).data('preview');
+        loadPreview();
+    });
+});
+</script>

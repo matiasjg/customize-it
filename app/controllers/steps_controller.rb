@@ -78,7 +78,6 @@ class StepsController < ApplicationController
 
   private
     def validate_payment_type
-        logger.debug action_name
         unless action_name == "not_allowed"
             shop = Shop.find session[:shopify]
             logger.debug shop.private?.inspect

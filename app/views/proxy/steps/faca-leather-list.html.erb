@@ -1,0 +1,17 @@
+{% layout none %}
+
+<% if @products %>
+<ul>
+    <% @products.each_with_index do |product, index| %>
+        {% assign product = all_products['<%= product.handle %>'] %}
+        {% assign alt_text = product.featured_image.alt %}
+        <li <%="class=selected" if index == 0 %>>
+            <a href="/apps/customize-test/<%= @next_step.step_url %>/{{ product.handle }}" data-preview="{{ product.handle }}">
+                <img src="{{ product.images[0].src | product_img_url: 'compact' }}" alt="{{ alt_text | escape }}" />
+            </a>
+            <span>Black</span>
+        </li>
+    <% end %>
+</ul>
+<% end %>
+
