@@ -5,7 +5,7 @@
     <% @products.each_with_index do |product, index| %>
         {% assign product = all_products['<%= product.handle %>'] %}
         {% assign alt_text = product.featured_image.alt %}
-        <li <%="class=selected" if index == 0 %>>
+        <li id="leather_{{ product.handle }}" <%="class=selected" if index == 0 %>>
             <% if index == 0 %>
                 {% assign handle = product.handle %}
             <% end %>
@@ -24,7 +24,9 @@ loadPreview();
 $(document).ready(function() {
     $("a.leatherLink").click(function(e) {
         e.preventDefault();
+        $("li#leather_"+leatherHandle).removeClass('selected');
         leatherHandle = $(this).data('preview');
+        $("li#leather_"+leatherHandle).addClass('selected');
         loadPreview();
     });
 });
