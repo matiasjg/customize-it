@@ -88,7 +88,7 @@ $(document).ready(function() {
 function loadPreview() {
     $.ajax({
       url: "/apps/customize/show",
-      data: "handle="+leatherHandle+"-"+claspHandle+"&size=large"
+      data: "handle="+claspHandle+"-"+leatherHandle+"&size=large"
     }).done(function(result) {
       $("#previewImg").html(result);
       $("#selectedDescription").html($("#descriptionShow").html());
