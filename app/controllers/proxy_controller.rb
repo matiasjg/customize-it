@@ -103,7 +103,7 @@ class ProxyController < ApplicationController
   #for ajax usage
   def get_setp_info
     @step = Step.where(shop_id: session[:shopify], id: params[:step_id]).first
-    render :text => @step.inspect
+    render :text => session[:shopify]
     #if @step.collection_id != ''
     #    collection = ShopifyAPI::CustomCollection.find(@step.collection_id)
     #    @products = ShopifyAPI::Product.find(:all, :params => { :collection_id => collection.id })
