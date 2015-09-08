@@ -102,8 +102,8 @@ class ProxyController < ApplicationController
 
   #for ajax usage
   def get_setp_info
-    #@step = Step.where(shop_id: session[:shopify], id: params[:step_id]).first
-    render :text => session.inspect
+    @step = Step.where(shop_id: session[:shopify], id: params[:step_id]).first
+    render :text => @step.inspect
     #if @step.collection_id != ''
     #    collection = ShopifyAPI::CustomCollection.find(@step.collection_id)
     #    @products = ShopifyAPI::Product.find(:all, :params => { :collection_id => collection.id })
@@ -120,7 +120,6 @@ class ProxyController < ApplicationController
   # preview image
   def show
     @size = 'medium'
-    logger.debug params[:size].inspect
     unless params[:size].nil?
         @size = params[:size]
     end
