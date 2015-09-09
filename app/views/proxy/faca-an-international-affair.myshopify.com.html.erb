@@ -108,7 +108,9 @@ function loadPreview() {
           $("#addToCartBtn").show();
       });
     });
-    $("img.cloudzoom").CloudZoom();
+    $("#previewImg img.cloudzoom").ready(function() {
+        $(this).CloudZoom();
+    });
 }
 
 /*
