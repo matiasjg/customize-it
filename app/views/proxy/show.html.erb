@@ -2,7 +2,7 @@
 {% assign preview = all_products.<%= params[:handle] %> %}
 
 <a href="{{ preview.images[0].src | product_img_url: 'master' }}" class="fancybox" title="{{  preview.images[0].alt | escape }}">
-  <img src="{{ 'loader.gif' | asset_url }}" data-src="{{ preview.images[0].src | product_img_url: '<%= @size %>' }}" data-src-retina="{{ preview.images[0].src | product_img_url: '1024x1024' }}" data-image-id="{{ preview.images[0].id }}" />
+  <img src="{{ 'loader.gif' | asset_url }}" data-src="{{ preview.images[0] | product_img_url: '<%= @size %>' }}" data-src-retina="{{ preview.images[0] | product_img_url: '1024x1024' }}" data-image-id="{{ preview.images[0].id }}" data-cloudzoom="zoomImage: '{{ preview.images[0] | product_img_url: 'master' }}', tintColor: '{{ settings.shop_bg_color }}', zoomPosition: 'inside', zoomOffsetX: 0, hoverIntentDelay: 100, touchStartDelay: 250" class="cloudzoom "/>
 </a>
 
 <!--<img src="{{ preview.images[0].src | product_img_url: '<%= @size %>' }}">-->
