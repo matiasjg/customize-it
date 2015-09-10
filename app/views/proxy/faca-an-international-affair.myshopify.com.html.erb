@@ -3,33 +3,33 @@
 
 <div class="custom-product">
     <div class="row">
-        <div class="twelve columns h-center">
+        <div class="col-md-12 h-center">
             <div class="main-pic">
                 <div id="previewImg"></div>
                 <h3 class="price h-center" style="display:none">Price: <span id="selectedPrice"></span></h3>
             </div>
         </div>
+    </div>
 
-        <div class="four columns sidebar">
-            <div class="clasp  h-center">
-                <h1>Choose Your Clasp</h1>
-                <% if @products %>
-                <ul>
-                    <% @products.each_with_index do |product, index| %>
-                        {% assign product = all_products['<%= product.handle %>'] %}
-                        {% assign alt_text = product.featured_image.alt %}
-                        <li id="clasp_{{ product.handle }}" <%="class=selected" if index == 0 %>>
-                            <% if index == 0 %>
-                                {% assign handle = product.handle %}
-                            <% end %>
-                            <a href="/apps/customize/<%= @next_step.step_url %>/{{ product.handle }}" data-preview="{{ product.handle }}" class="claspLink">
-                                <img src="{{ product.images[0].src | product_img_url: 'compact' }}" alt="{{ alt_text | escape }}" />
-                            </a>
-                        </li>
-                    <% end %>
-                </ul>
+    <div class="col-md-12 h-center">
+        <div class="clasp  h-center">
+            <h1>Choose Your Clasp</h1>
+            <% if @products %>
+            <ul>
+                <% @products.each_with_index do |product, index| %>
+                    {% assign product = all_products['<%= product.handle %>'] %}
+                    {% assign alt_text = product.featured_image.alt %}
+                    <li id="clasp_{{ product.handle }}" <%="class=selected" if index == 0 %>>
+                        <% if index == 0 %>
+                            {% assign handle = product.handle %}
+                        <% end %>
+                        <a href="/apps/customize/<%= @next_step.step_url %>/{{ product.handle }}" data-preview="{{ product.handle }}" class="claspLink">
+                            <img src="{{ product.images[0].src | product_img_url: 'compact' }}" alt="{{ alt_text | escape }}" />
+                        </a>
+                    </li>
                 <% end %>
-            </div>
+            </ul>
+            <% end %>
         </div>
     </div>
 
