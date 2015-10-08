@@ -39,12 +39,17 @@ class WebhooksController < ApplicationController
   def order_create
     data = ActiveSupport::JSON.decode(request.body.read)
 
-    # we check duplicated calls of the webhooks for orders
-    orderWebhook = WebhookCall.where(order_id: data['id']).first
+    orderWebhook = nil
+    if data['id'].present?
+        # we check duplicated calls of the webhooks for orders
+        orderWebhook = WebhookCall.where(order_id: data['id']).first
+    end
 
     if orderWebhook.nil?
         set_shopify_session
+
         order = ShopifyAPI::Order.find(data['id'])
+
 
         unless order.nil?
           order.line_items.each do |line|
@@ -115,7 +120,7 @@ class WebhooksController < ApplicationController
     end
 
     def set_shopify_session
-      if params[:sid]
+      if params[:sid].present?
         session = Shop.retrieve params[:sid]
         ShopifyAPI::Base.activate_session(session)
       end
