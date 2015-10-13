@@ -1,7 +1,7 @@
 {{ 'jquery.mCustomScrollbar.css' | asset_url | stylesheet_tag }}
 {{ 'jquery.mCustomScrollbar.min.js' | asset_url | script_tag }}
 
-<div class="custom-product custom-item">
+<div class="custom-product">
     <div class="row">
         <div class="col-md-12 h-center">
             <div class="main-pic">
@@ -72,6 +72,8 @@ var claspHandle = '{{ handle }}';
 var leatherHandle = '';
 var variant = '';
 $(document).ready(function() {
+    $("body").addClass("custom-item");
+
     $.ajax({
       url: "/apps/customize/step/<%= @step.next_step_id %>",
     }).done(function(result) {
